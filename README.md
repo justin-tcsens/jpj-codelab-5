@@ -46,6 +46,69 @@ Vehicle service endpoint.
 
 	```
 
+- Add database connection configuration into **application.properties** file, to enable Spring Boot application establish connection over it.
+  Verify the database connnection url are matched to your local environment setup.
+
+	```
+	spring.application.name=vehicle-management
+	server.port=8080
+
+	# JDBC Data Source
+	spring.datasource.driverClassName=org.mariadb.jdbc.Driver
+	spring.datasource.url=jdbc:mariadb://localhost:3306/jpj-training
+	spring.datasource.username=app
+	spring.datasource.password=password
+	spring.datasource.testOnBorrow=true
+	spring.datasource.testWhileIdle=true
+	spring.datasource.timeBetweenEvictionRunsMillis=60000
+	spring.datasource.minEvictableIdleTimeMillis=30000
+	spring.datasource.validationQuery=SELECT 1
+	spring.datasource.max-active=15
+	spring.datasource.max-idle=10
+	spring.datasource.max-wait=8000
+	```
+
+- Save application.properties file.
+- Open pom.xml file from the project directory.
+- Uncomment both JooQ and MariaDB driver dependencies, to enable maven loaded necessary dependencies for compilation, as per following:-
+	```
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mariadb.jdbc</groupId>
+			<artifactId>mariadb-java-client</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	```
+
+- Add Maven Flyway plugin execution goal to pom.xml, at the very first entry in <plugins> collection.
+  Verify the database connnection url are matched to your local environment setup.
+	```
+	<!-- Flyway Core -->
+		<plugin>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-maven-plugin</artifactId>
+			<version>8.1.0</version>
+			<executions>
+				<execution>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>migrate</goal>
+					</goals>
+					<configuration>
+						<driver>org.mariadb.jdbc.Driver</driver>
+						<url>jdbc:mariadb://localhost:3306/jpj-training</url>
+						<user>app</user>
+						<password>password</password>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	```
+
 ### Notes:
 - Run '.\mvnw clean install' to install necessary package defined in pom.xml
 - Run '.\mvnw spring-boot:run' to start the Spring Boot application.
